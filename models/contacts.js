@@ -33,7 +33,7 @@ const addContact = async ({ name, email, phone }) => {
   allContacts.push(newEntry);
   await refreshContacts(allContacts);
   // const newContacts = await listContacts();
-  return newEntry;
+  return { newEntry, allContacts };
 };
 
 const updateContact = async (contactId, body) => {};

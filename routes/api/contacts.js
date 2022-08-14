@@ -1,10 +1,18 @@
 const express = require("express");
-const router = express.Router();
+
+const Joi = require("joi");
 
 const { RequestError } = require("../../helpers");
 const contacts = require("../../models/contacts");
 
-router.get("/", async (req, res, next) => {
+const router = express.Router();
+const contactSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+});
+
+router.get("/", async (_, res, next) => {
   try {
     const result = await contacts.listContacts();
     res.json(result);
@@ -29,7 +37,19 @@ router.get("/:contactId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const newEntry = await contacts.addContact(req.body);
+    const { error } = contactSchema.validate(req.body);
+    if (error) {
+      throw RequestError(400, error.message);
+    }
+    const { newEntry, allContacts } = await contacts.addContact(req.body);
+    const { name, email, phone } = req.body;
+    const isInList = allContacts.some(
+      (item) =>
+        item.name === name || item.email === email || item.phone === phone
+    );
+    if (isInList) {
+      throw RequestError(400, "Already in list!");
+    }
     res.status(201).json(newEntry);
   } catch (error) {
     next(error);
