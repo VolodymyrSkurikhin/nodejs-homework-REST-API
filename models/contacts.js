@@ -19,7 +19,16 @@ const getContactById = async (contactId) => {
   return oneContact || null;
 };
 
-const removeContact = async (contactId) => {};
+const removeContact = async (contactId) => {
+  const allContacts = await listContacts();
+  const idx = allContacts.findIndex((item) => item.id === contactId);
+  if (idx === -1) {
+    return null;
+  }
+  const [removedContact] = allContacts.splice(idx, 1);
+  await refreshContacts(allContacts);
+  return removedContact;
+};
 
 const addContact = async ({ name, email, phone }) => {
   const allContacts = await listContacts();
