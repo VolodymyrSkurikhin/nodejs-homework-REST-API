@@ -37,15 +37,22 @@ const addContact = async ({ name, email, phone }) => {
     name,
     email,
     phone,
-    // ...body,
   };
   allContacts.push(newEntry);
   await refreshContacts(allContacts);
-  // const newContacts = await listContacts();
-  return { newEntry, allContacts };
+  return newEntry;
 };
 
-const updateContact = async (contactId, body) => {};
+const updateContact = async (contactId, { name, email, phone }) => {
+  const allContacts = await listContacts();
+  const idx = allContacts.findIndex((item) => item.id === contactId);
+  if (idx === -1) {
+    return null;
+  }
+  allContacts[idx] = { id: contactId, name, email, phone };
+  await refreshContacts(allContacts);
+  return allContacts[idx];
+};
 
 module.exports = {
   listContacts,

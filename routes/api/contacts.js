@@ -17,7 +17,6 @@ router.get("/", async (_, res, next) => {
     const result = await contacts.listContacts();
     res.json(result);
   } catch (error) {
-    // error.message = "Server error";
     next(error);
   }
 });
@@ -41,7 +40,7 @@ router.post("/", async (req, res, next) => {
     if (error) {
       throw RequestError(400, error.message);
     }
-    const { newEntry, allContacts } = await contacts.addContact(req.body);
+    const allContacts = await contacts.listContacts();
     const { name, email, phone } = req.body;
     const isInList = allContacts.some(
       (item) =>
@@ -50,6 +49,7 @@ router.post("/", async (req, res, next) => {
     if (isInList) {
       throw RequestError(400, "Already in list!");
     }
+    const newEntry = await contacts.addContact(req.body);
     res.status(201).json(newEntry);
   } catch (error) {
     next(error);
@@ -70,7 +70,20 @@ router.delete("/:contactId", async (req, res, next) => {
 });
 
 router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { error } = contactSchema.validate(req.body);
+    if (error) {
+      throw RequestError(400, "missing fields");
+    }
+    const { contactId } = req.params;
+    const updatedContact = await contacts.updateContact(contactId, req.body);
+    if (!updatedContact) {
+      throw RequestError(404, "Not found");
+    }
+    res.json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
