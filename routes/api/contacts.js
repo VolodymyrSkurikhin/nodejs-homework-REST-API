@@ -2,10 +2,14 @@ const express = require("express");
 
 // const Joi = require("joi");
 
-const { Contact, contactSchema } = require("../../models/contact");
+const {
+  Contact,
+  contactSchema,
+  updateFavoriteSchema,
+} = require("../../models/contact");
 
 const { RequestError } = require("../../helpers");
-const contacts = require("../../models/contacts");
+// const contacts = require("../../models/contacts");
 const { isValidId } = require("../../middlewares");
 
 const router = express.Router();
@@ -94,10 +98,23 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.delete("/:contactId", async (req, res, next) => {
+// router.delete("/:contactId", async (req, res, next) => {
+//   try {
+//     const { contactId } = req.params;
+//     const result = await contacts.removeContact(contactId);
+//     if (!result) {
+//       throw RequestError(404, "Not found");
+//     }
+//     res.json({ message: "contact deleted" });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.delete("/:contactId", isValidId, async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contacts.removeContact(contactId);
+    const result = await Contact.findByIdAndRemove(contactId);
     if (!result) {
       throw RequestError(404, "Not found");
     }
@@ -131,7 +148,32 @@ router.put("/:contactId", isValidId, async (req, res, next) => {
       throw RequestError(400, "missing fields");
     }
     const { contactId } = req.params;
-    const updatedContact = await contacts.updateContact(contactId, req.body);
+    const updatedContact = await Contact.findByIdAndUpdate(
+      contactId,
+      req.body,
+      { new: true }
+    );
+    if (!updatedContact) {
+      throw RequestError(404, "Not found");
+    }
+    res.json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/:contactId/favorite", isValidId, async (req, res, next) => {
+  try {
+    const { error } = updateFavoriteSchema.validate(req.body);
+    if (error) {
+      throw RequestError(400, "missing fields");
+    }
+    const { contactId } = req.params;
+    const updatedContact = await Contact.findByIdAndUpdate(
+      contactId,
+      req.body,
+      { new: true }
+    );
     if (!updatedContact) {
       throw RequestError(404, "Not found");
     }
