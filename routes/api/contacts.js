@@ -1,5 +1,5 @@
 const express = require("express");
-const { add } = require("../../controllers/contacts");
+const { add, getAll, getById } = require("../../controllers/contacts");
 
 // const Joi = require("joi");
 
@@ -29,19 +29,23 @@ const router = express.Router();
 //   }
 // });
 
-router.get("/", async (_, res, next) => {
-  try {
-    const result = await Contact.find();
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-});
+// router.get("/", async (_, res, next) => {
+//   try {
+//     const result = await Contact.find();
+//     res.json(result);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-// router.get("/:contactId", async (req, res, next) => {
+router.get("/", cntrWrapper(getAll));
+
+router.get("/:contactId", isValidId, cntrWrapper(getById));
+
+// router.get("/:contactId", isValidId, async (req, res, next) => {
 //   try {
 //     const { contactId } = req.params;
-//     const oneContact = await contacts.getContactById(contactId);
+//     const oneContact = await Contact.findById(contactId);
 //     if (!oneContact) {
 //       throw RequestError(404, "Not found");
 //     }
@@ -50,19 +54,6 @@ router.get("/", async (_, res, next) => {
 //     next(error);
 //   }
 // });
-
-router.get("/:contactId", isValidId, async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const oneContact = await Contact.findById(contactId);
-    if (!oneContact) {
-      throw RequestError(404, "Not found");
-    }
-    res.json(oneContact);
-  } catch (error) {
-    next(error);
-  }
-});
 
 // router.post("/", async (req, res, next) => {
 //   try {
