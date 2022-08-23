@@ -1,4 +1,5 @@
 const express = require("express");
+const { add } = require("../../controllers/contacts");
 
 // const Joi = require("joi");
 
@@ -8,9 +9,9 @@ const {
   updateFavoriteSchema,
 } = require("../../models/contact");
 
-const { RequestError } = require("../../helpers");
+const { RequestError, cntrWrapper } = require("../../helpers");
 // const contacts = require("../../models/contacts");
-const { isValidId } = require("../../middlewares");
+const { isValidId, validator } = require("../../middlewares");
 
 const router = express.Router();
 // const contactSchema = Joi.object({
@@ -85,18 +86,20 @@ router.get("/:contactId", isValidId, async (req, res, next) => {
 //   }
 // });
 
-router.post("/", async (req, res, next) => {
-  try {
-    const { error } = contactSchema.validate(req.body);
-    if (error) {
-      throw RequestError(400, error.message);
-    }
-    const newEntry = await Contact.create(req.body);
-    res.status(201).json(newEntry);
-  } catch (error) {
-    next(error);
-  }
-});
+// router.post("/", async (req, res, next) => {
+//   try {
+//     const { error } = contactSchema.validate(req.body);
+//     if (error) {
+//       throw RequestError(400, error.message);
+//     }
+//     const newEntry = await Contact.create(req.body);
+//     res.status(201).json(newEntry);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.post("/", validator(contactSchema), cntrWrapper(add));
 
 // router.delete("/:contactId", async (req, res, next) => {
 //   try {
