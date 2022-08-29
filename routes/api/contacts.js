@@ -8,13 +8,9 @@ const {
   updateFavorite,
 } = require("../../controllers/contacts");
 
-const {
-  Contact,
-  contactSchema,
-  updateFavoriteSchema,
-} = require("../../models/contact");
+const { contactSchema, updateFavoriteSchema } = require("../../models/contact");
 
-const { RequestError, cntrWrapper } = require("../../helpers");
+const { cntrWrapper } = require("../../helpers");
 
 const { isValidId, validator } = require("../../middlewares");
 
