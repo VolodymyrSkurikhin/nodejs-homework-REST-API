@@ -5,7 +5,7 @@ const cors = require("cors");
 // const dotenv = require("dotenv");
 
 const contactsRouter = require("./routes/api/contacts");
-const userRouter = require("./routes/api/users");
+const userRouter = require("./routes/api/auth");
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use("/users/signup", userRouter);
+app.use("/users", userRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((req, res) => {
