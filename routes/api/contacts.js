@@ -12,7 +12,7 @@ const { contactSchema, updateFavoriteSchema } = require("../../models/contact");
 
 const { cntrWrapper } = require("../../helpers");
 
-const { isValidId, validator } = require("../../middlewares");
+const { isValidId, validator, authenticate } = require("../../middlewares");
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.get("/", cntrWrapper(getAll));
 
 router.get("/:contactId", isValidId, cntrWrapper(getById));
 
-router.post("/", validator(contactSchema), cntrWrapper(add));
+router.post("/", authenticate, validator(contactSchema), cntrWrapper(add));
 
 router.delete("/:contactId", isValidId, cntrWrapper(removeById));
 
