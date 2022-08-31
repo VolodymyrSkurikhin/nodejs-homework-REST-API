@@ -16,16 +16,17 @@ const { isValidId, validator, authenticate } = require("../../middlewares");
 
 const router = express.Router();
 
-router.get("/", cntrWrapper(getAll));
+router.get("/", authenticate, cntrWrapper(getAll));
 
-router.get("/:contactId", isValidId, cntrWrapper(getById));
+router.get("/:contactId", authenticate, isValidId, cntrWrapper(getById));
 
 router.post("/", authenticate, validator(contactSchema), cntrWrapper(add));
 
-router.delete("/:contactId", isValidId, cntrWrapper(removeById));
+router.delete("/:contactId", authenticate, isValidId, cntrWrapper(removeById));
 
 router.put(
   "/:contactId",
+  authenticate,
   isValidId,
   validator(contactSchema),
   cntrWrapper(updateById)
@@ -33,6 +34,7 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   validator(updateFavoriteSchema),
   cntrWrapper(updateFavorite)
