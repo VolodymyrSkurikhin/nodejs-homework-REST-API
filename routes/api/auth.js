@@ -14,6 +14,6 @@ const router = express.Router();
 router.post("/signup", validator(registerSchema), cntrWrapper(register));
 router.post("/login", validator(loginSchema), cntrWrapper(login));
 router.get("/logout", authenticate, cntrWrapper(logout));
-router.get("/users/current", authenticate, cntrWrapper(getCurrentUser));
+router.get("/current", authenticate, cntrWrapper(getCurrentUser));
 
 module.exports = router;

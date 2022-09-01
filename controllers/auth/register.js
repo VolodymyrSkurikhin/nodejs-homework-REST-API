@@ -12,7 +12,7 @@ const register = async (req, res) => {
   const result = await User.create({ email, password: hashedPassword });
   res
     .status(201)
-    .json({ email: result.email, subscription: result.subscription });
+    .json({ user: { email: result.email, subscription: result.subscription } });
 };
 
 module.exports = register;
