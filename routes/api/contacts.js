@@ -8,28 +8,25 @@ const {
   updateFavorite,
 } = require("../../controllers/contacts");
 
-const {
-  Contact,
-  contactSchema,
-  updateFavoriteSchema,
-} = require("../../models/contact");
+const { contactSchema, updateFavoriteSchema } = require("../../models/contact");
 
-const { RequestError, cntrWrapper } = require("../../helpers");
+const { cntrWrapper } = require("../../helpers");
 
-const { isValidId, validator } = require("../../middlewares");
+const { isValidId, validator, authenticate } = require("../../middlewares");
 
 const router = express.Router();
 
-router.get("/", cntrWrapper(getAll));
+router.get("/", authenticate, cntrWrapper(getAll));
 
-router.get("/:contactId", isValidId, cntrWrapper(getById));
+router.get("/:contactId", authenticate, isValidId, cntrWrapper(getById));
 
-router.post("/", validator(contactSchema), cntrWrapper(add));
+router.post("/", authenticate, validator(contactSchema), cntrWrapper(add));
 
-router.delete("/:contactId", isValidId, cntrWrapper(removeById));
+router.delete("/:contactId", authenticate, isValidId, cntrWrapper(removeById));
 
 router.put(
   "/:contactId",
+  authenticate,
   isValidId,
   validator(contactSchema),
   cntrWrapper(updateById)
@@ -37,6 +34,7 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   validator(updateFavoriteSchema),
   cntrWrapper(updateFavorite)
