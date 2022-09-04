@@ -5,6 +5,7 @@ const {
   logout,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 } = require("../../controllers/auth");
 const {
   registerSchema,
@@ -12,7 +13,12 @@ const {
   updateSubscriptionSchema,
 } = require("../../models/users");
 const { cntrWrapper } = require("../../helpers");
-const { validator, authenticate, isValidUserId } = require("../../middlewares");
+const {
+  validator,
+  authenticate,
+  isValidUserId,
+  upload,
+} = require("../../middlewares");
 
 const router = express.Router();
 
@@ -26,6 +32,12 @@ router.patch(
   isValidUserId,
   validator(updateSubscriptionSchema),
   cntrWrapper(updateSubscription)
+);
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  cntrWrapper(updateAvatar)
 );
 
 module.exports = router;
