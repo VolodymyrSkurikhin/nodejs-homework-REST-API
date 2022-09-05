@@ -27,17 +27,18 @@ router.post("/login", validator(loginSchema), cntrWrapper(login));
 router.get("/logout", authenticate, cntrWrapper(logout));
 router.get("/current", authenticate, cntrWrapper(getCurrentUser));
 router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  cntrWrapper(updateAvatar)
+);
+
+router.patch(
   "/:userId/subscription",
   authenticate,
   isValidUserId,
   validator(updateSubscriptionSchema),
   cntrWrapper(updateSubscription)
-);
-router.patch(
-  "/avatars",
-  authenticate,
-  upload.single("avatar"),
-  cntrWrapper(updateAvatar)
 );
 
 module.exports = router;
