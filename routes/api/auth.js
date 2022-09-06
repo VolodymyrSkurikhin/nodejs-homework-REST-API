@@ -18,6 +18,7 @@ const {
   authenticate,
   isValidUserId,
   upload,
+  resizeAvatar,
 } = require("../../middlewares");
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.patch(
   "/avatars",
   authenticate,
   upload.single("avatar"),
+  resizeAvatar,
   cntrWrapper(updateAvatar)
 );
 
