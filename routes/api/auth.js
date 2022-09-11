@@ -6,6 +6,7 @@ const {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verifyEmail,
 } = require("../../controllers/auth");
 const {
   registerSchema,
@@ -24,6 +25,7 @@ const {
 const router = express.Router();
 
 router.post("/signup", validator(registerSchema), cntrWrapper(register));
+router.get("/verify/:verificationToken", cntrWrapper(verifyEmail));
 router.post("/login", validator(loginSchema), cntrWrapper(login));
 router.get("/logout", authenticate, cntrWrapper(logout));
 router.get("/current", authenticate, cntrWrapper(getCurrentUser));
