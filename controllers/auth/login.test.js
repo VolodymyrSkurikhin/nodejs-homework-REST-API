@@ -44,4 +44,3 @@ describe("test login controller", () => {
     expect(typeof body.user.subscription).toBe("string");
   });
 });
->>>>>>> 5186221cd1a6bcceedee054ac0a39175251f49e3
