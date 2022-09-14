@@ -6,11 +6,14 @@ const {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verifyEmail,
+  resendVerifyEmail,
 } = require("../../controllers/auth");
 const {
   registerSchema,
   loginSchema,
   updateSubscriptionSchema,
+  verifyEmailSchema,
 } = require("../../models/users");
 const { cntrWrapper } = require("../../helpers");
 const {
@@ -24,6 +27,12 @@ const {
 const router = express.Router();
 
 router.post("/signup", validator(registerSchema), cntrWrapper(register));
+router.get("/verify/:verificationToken", cntrWrapper(verifyEmail));
+router.post(
+  "/verify",
+  validator(verifyEmailSchema),
+  cntrWrapper(resendVerifyEmail)
+);
 router.post("/login", validator(loginSchema), cntrWrapper(login));
 router.get("/logout", authenticate, cntrWrapper(logout));
 router.get("/current", authenticate, cntrWrapper(getCurrentUser));
